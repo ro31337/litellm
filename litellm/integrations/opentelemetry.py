@@ -1114,11 +1114,10 @@ class OpenTelemetry(OTELGenAISemconvMixin, CustomLogger):
     def _set_team_attributes_from_kwargs(self, span: Span, kwargs: dict) -> None:
         """Pull team_id / team_alias from the standard logging metadata in kwargs and stamp them onto span."""
         std_log = kwargs.get("standard_logging_object")
-        if std_log is None:
-            md = {}
-        elif isinstance(std_log, dict):
+        md: dict = {}
+        if isinstance(std_log, dict):
             md = std_log.get("metadata") or {}
-        else:
+        elif std_log is not None:
             md = getattr(std_log, "metadata", None) or {}
         self._set_team_attributes_on_span(
             span=span,
